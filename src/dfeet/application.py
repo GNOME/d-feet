@@ -15,17 +15,17 @@ class DFeetApp(Gtk.Application):
         Gtk.Application.__init__(self, application_id="org.gnome.d-feet",
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
 
-    #Note that the function in C activate() becomes do_activate() in Python
+    # Note that the function in C activate() becomes do_activate() in Python
     def do_activate(self):
         win = DFeetWindow(self, self.package, self.version, self.data_dir)
 
-    #Note that the function in C startup() becomes do_startup() in Python
+    # Note that the function in C startup() becomes do_startup() in Python
     def do_startup(self):
         Gtk.Application.do_startup(self)
         builder = Gtk.Builder()
         builder.add_from_file(os.path.join(self.data_dir, "ui", "app-menu.ui"))
 
-        #create actions
+        # create actions
         action = Gio.SimpleAction.new("about", None)
         action.connect("activate", self.action_about_cb)
         self.add_action(action)

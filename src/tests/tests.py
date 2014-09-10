@@ -66,7 +66,7 @@ class IntrospectionHelperTest(unittest.TestCase):
         obj_prop = DBusProperty(obj_iface, obj_iface.iface_info.properties[0])
         self.assertEqual(obj_prop.name, self.name)
         self.assertEqual(obj_prop.object_path, self.object_path)
-        #get the markup string with value for struct prop (see bgo #702593)
+        # get the markup string with value for struct prop (see bgo #702593)
         obj_prop = DBusProperty(obj_iface, obj_iface.iface_info.properties[2])
         obj_prop.value = ("string", 1, 2)
         self.assertIn("'string', 1, 2", obj_prop.markup_str)
@@ -98,10 +98,10 @@ class AddressInfoTest(unittest.TestCase):
     @unittest.skip("TODO:peer to peer test not implemented")
     def test_peer_to_peer(self):
         """test a p2p connection"""
-        #TODO: setup a gdbus server and test a peer to peer connection
-        #(see http://developer.gnome.org/gio/unstable/GDBusServer.html#gdbus-peer-to-peer)
+        # TODO: setup a gdbus server and test a peer to peer connection
+        # (see http://developer.gnome.org/gio/unstable/GDBusServer.html#gdbus-peer-to-peer)
         pass
 
 if __name__ == "__main__":
-    #run tests
+    # run tests
     unittest.main()

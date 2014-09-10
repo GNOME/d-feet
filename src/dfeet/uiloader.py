@@ -33,7 +33,7 @@ class UILoader:
         self.ui = Gtk.Builder()
         self.data_dir = data_dir
 
-        #load ui files
+        # load ui files
         for f in ui_info[0]:
             self.ui.add_from_file(self.ui_dir + '/' + f)
 

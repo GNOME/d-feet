@@ -10,7 +10,7 @@ class AddConnectionDialog:
 
         self.dialog = ui.get_root_widget()
 
-        #get the hbox and add address combo box with model
+        # get the hbox and add address combo box with model
         hbox1 = ui.get_widget('hbox1')
         self.address_combo_box_store = Gtk.ListStore(str)
         self.address_combo_box = Gtk.ComboBox.new_with_model_and_entry(
@@ -21,7 +21,7 @@ class AddConnectionDialog:
         hbox1.pack_start(self.address_combo_box, True, True, 0)
         hbox1.show_all()
 
-        #add history to model
+        # add history to model
         for el in address_bus_history:
             self.address_combo_box_store.append([el])
 
@@ -43,7 +43,7 @@ class AddConnectionDialog:
         if response == Gtk.ResponseType.CANCEL:
             return response
         elif response == Gtk.ResponseType.OK:
-            #check if given address is valid
+            # check if given address is valid
             try:
                 is_supported = Gio.dbus_is_supported_address(self.address)
             except Exception as e:

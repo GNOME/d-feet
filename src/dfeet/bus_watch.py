@@ -22,23 +22,23 @@ class BusNameBox(Gtk.VBox):
 
         self.__hbox = Gtk.HBox(spacing=5, halign=Gtk.Align.START)
         self.pack_start(self.__hbox, True, True, 0)
-        #icon
+        # icon
         self.__hbox.pack_start(self.__icon_image, True, True, 0)
-        #other information
+        # other information
         self.__vbox_right = Gtk.VBox(spacing=5, expand=True)
         self.__hbox.pack_start(self.__vbox_right, True, True, 0)
 
-        #first element
+        # first element
         self.__label_bus_name = Gtk.Label()
         self.__label_bus_name.set_halign(Gtk.Align.START)
         self.__vbox_right.pack_start(self.__label_bus_name, True, True, 0)
-        #second element
+        # second element
         self.__label_info = Gtk.Label()
         self.__label_info.set_halign(Gtk.Align.START)
         self.__vbox_right.pack_start(self.__label_info, True, True, 0)
-        #separator for the boxes
+        # separator for the boxes
         self.pack_end(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL), True, True, 0)
-        #update widget information
+        # update widget information
         self.__update_widget()
         self.show_all()
 
@@ -48,7 +48,7 @@ class BusNameBox(Gtk.VBox):
             self.__label_bus_name.set_markup("<b>{0}</b>".format(self.__bus_name))
         else:
             self.__label_bus_name.set_markup("<b><i>{0}</i></b>".format(self.__bus_name))
-        #update the label info
+        # update the label info
         label_info_str = "<small>"
         if self.__activatable:
             label_info_str += "activatable: yes"
@@ -56,7 +56,7 @@ class BusNameBox(Gtk.VBox):
             label_info_str += "activatable: no"
         if self.__process_id:
             label_info_str += ", pid: {0}".format(self.__process_id)
-            #get the icon (if available)
+            # get the icon (if available)
             if self.__process_id in self.__icon_table.app_map.keys():
                 self.__icon_image.set_from_pixbuf(self.__icon_table.app_map[self.__process_id])
             else:
@@ -94,7 +94,7 @@ class BusNameBox(Gtk.VBox):
     def activatable(self, act_new):
         self.__activatable = act_new
 
-        #update the shown widget
+        # update the shown widget
         self.__update_widget()
 
     @property
@@ -108,7 +108,7 @@ class BusNameBox(Gtk.VBox):
             self.__update_command_line()
         except:
             self.__command_line = ''
-        #update the shown widget
+        # update the shown widget
         self.__update_widget()
 
 
@@ -117,23 +117,23 @@ class BusWatch(object):
     def __init__(self, data_dir, bus_address):
         self.__data_dir = data_dir
         self.__bus_address = bus_address
-        #setup UI
+        # setup UI
         ui = UILoader(self.__data_dir, UILoader.UI_BUS)
         self.__box_bus = ui.get_root_widget()
         self.__scrolledwindow_listbox = ui.get_widget("scrolledwindow_listbox")
         self.__bus_name_filter = ui.get_widget('entry_filter')
-        #create a listbox for all the busnames
+        # create a listbox for all the busnames
         self.__listbox = Gtk.ListBox(hexpand=True, vexpand=True, expand=True)
         self.__listbox.set_sort_func(self.__listbox_sort_by_name, None)
         self.__listbox.set_filter_func(self.__listbox_filter_by_name, None)
         self.__scrolledwindow_listbox.add(self.__listbox)
         self.__scrolledwindow_listbox.show_all()
-        #setup the bus connection
+        # setup the bus connection
         if self.__bus_address == Gio.BusType.SYSTEM or self.__bus_address == Gio.BusType.SESSION:
-            #TODO: do this async
+            # TODO: do this async
             self.connection = Gio.bus_get_sync(self.__bus_address, None)
         elif Gio.dbus_is_supported_address(self.__bus_address):
-            #TODO: do this async
+            # TODO: do this async
             self.connection = Gio.DBusConnection.new_for_address_sync(
                 self.__bus_address,
                 Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT |
@@ -142,19 +142,19 @@ class BusWatch(object):
         else:
             raise ValueError("Invalid bus address '{0}'".format(self.__bus_address))
 
-        #setup signals
+        # setup signals
         self.connection.signal_subscribe(None, "org.freedesktop.DBus", "NameOwnerChanged",
                                          None, None, 0, self.__name_owner_changed_cb, None)
 
-        #refilter if someone wants to filter the busbox list
+        # refilter if someone wants to filter the busbox list
         self.__bus_name_filter.connect("changed",
                                        self.__bus_name_filter_changed_cb)
 
-        #change bus detail tree if a different bus is selected
+        # change bus detail tree if a different bus is selected
         self.__listbox.connect("row-selected",
                                self.__listbox_row_selected_cb)
 
-        #TODO: do this async
+        # TODO: do this async
         self.bus_proxy = Gio.DBusProxy.new_sync(self.connection,
                                                 Gio.DBusProxyFlags.NONE,
                                                 None,
@@ -162,12 +162,12 @@ class BusWatch(object):
                                                 '/org/freedesktop/DBus',
                                                 'org.freedesktop.DBus', None)
 
-        #get a list with activatable names
+        # get a list with activatable names
         self.bus_proxy.ListActivatableNames('()',
                                             result_handler=self.__list_act_names_handler,
                                             error_handler=self.__list_act_names_error_handler)
 
-        #list all names
+        # list all names
         self.bus_proxy.ListNames('()',
                                  result_handler=self.__list_names_handler,
                                  error_handler=self.__list_names_error_handler)
@@ -184,7 +184,7 @@ class BusWatch(object):
     def __listbox_row_selected_cb(self, listbox, listbox_row):
         """someone selected a different row of the listbox"""
         childs = self.box_bus.get_children()
-        #never remove first element - that's the listbox with the busnames
+        # never remove first element - that's the listbox with the busnames
         if len(childs) > 1:
             self.box_bus.remove(childs[-1])
 
@@ -193,11 +193,11 @@ class BusWatch(object):
         except:
             pass
 
-        #get the selected busname
+        # get the selected busname
         if listbox_row:
             row_childs = listbox_row.get_children()
             bus_name_box = row_childs[0]
-            #add the introspection info to the left side
+            # add the introspection info to the left side
             self.__addr_info = AddressInfo(self.__data_dir,
                                            self.__bus_address,
                                            bus_name_box.bus_name,
@@ -232,7 +232,7 @@ class BusWatch(object):
         for listbox_child in self.__listbox.get_children():
             if listbox_child.get_children()[0].bus_name == bus_name:
                 return listbox_child
-        #busname not found
+        # busname not found
         return None
 
     def __listbox_remove_bus_name(self, bus_name):
@@ -240,7 +240,7 @@ class BusWatch(object):
         obj = self.__listbox_find_bus_name(bus_name)
         if obj:
             self.__listbox.remove(obj)
-            #if bus is activatable, add the bus name again
+            # if bus is activatable, add the bus name again
             if bus_name in self.__activatable_names:
                 bnb = BusNameBox(bus_name, '')
                 self.__listbox_add_bus_name(bnb)
@@ -249,23 +249,23 @@ class BusWatch(object):
 
     def __listbox_add_bus_name(self, bus_name_box):
         """add the given busnamebox to the listbox and update the info"""
-        #first check if busname is already listed
-        #ie an activatable (but inactive) busname
+        # first check if busname is already listed
+        # ie an activatable (but inactive) busname
         bn = self.__listbox_find_bus_name(bus_name_box.bus_name)
         if bn:
-            #bus name is already in the list - use this
+            # bus name is already in the list - use this
             bus_name_box = bn.get_children()[0]
         else:
-            #add busnamebox to the list
+            # add busnamebox to the list
             self.__listbox.add(bus_name_box)
 
-        #update bus info stuff
+        # update bus info stuff
         self.bus_proxy.GetConnectionUnixProcessID(
             '(s)', bus_name_box.bus_name,
             result_handler=self.__get_unix_process_id_cb,
             error_handler=self.__get_unix_process_id_error_cb,
             user_data=bus_name_box)
-        #check if bus name is dbus activatable
+        # check if bus name is dbus activatable
         if bus_name_box.bus_name in self.__activatable_names:
             bus_name_box.activatable = True
         else:
@@ -284,7 +284,7 @@ class BusWatch(object):
 
     def __add_names(self, names):
         for n in names:
-            #unique names are added right away
+            # unique names are added right away
             if n[0] == ':':
                 self.__add_name(n, n)
             else:
@@ -300,9 +300,9 @@ class BusWatch(object):
         print("error getting bus names: %s" % str(error))
 
     def __list_act_names_handler(self, obj, act_names, userdata):
-        #remember the activatable bus names
+        # remember the activatable bus names
         self.__activatable_names = act_names
-        #add all activatable bus names to the list
+        # add all activatable bus names to the list
         self.__add_names(act_names)
 
     def __list_act_names_error_handler(self, obj, error, userdata):
@@ -313,8 +313,8 @@ class BusWatch(object):
         bus_name_box.process_id = pid
 
     def __get_unix_process_id_error_cb(self, obj, error, bus_name_box):
-        #print("error getting unix process id for %s: %s" % (
-        #    bus_name_box.bus_name, str(error)))
+        # print("error getting unix process id for %s: %s" % (
+        #     bus_name_box.bus_name, str(error)))
         bus_name_box.process_id = 0
 
     def __listbox_filter_by_name(self, row, user_data):

@@ -37,12 +37,12 @@ class ExecuteMethodDialog:
         self.label_interface.set_markup("%s" % (self.method_obj.iface_info.name))
 
     def execute_cb(self, widget):
-        #get given parameters
+        # get given parameters
         buf = self.parameter_textview.get_buffer()
         params = buf.get_text(buf.get_start_iter(),
                               buf.get_end_iter(), False)
 
-        #reset the statistics stuff
+        # reset the statistics stuff
         self.label_avg.set_text("")
         self.label_min.set_text("")
         self.label_max.set_text("")
@@ -52,7 +52,7 @@ class ExecuteMethodDialog:
             }
 
         try:
-            #build a GVariant
+            # build a GVariant
             if params:
                 params = "(" + params + ",)"
                 params_code = '(' + self.method_obj.in_args_code + ')'
@@ -68,35 +68,35 @@ class ExecuteMethodDialog:
                                                self.method_obj.object_path,
                                                self.method_obj.iface_info.name,
                                                None)
-                #call the function
+                # call the function
                 for i in range(0, self.method_execution_count_spinbutton.get_value_as_int()):
                     user_data['method_call_time_start'] = time.time()
                     proxy.call(
                         self.method_obj.method_info.name, params_gvariant,
                         Gio.DBusCallFlags.NONE, -1, None, self.method_connection_bus_cb, user_data)
             else:
-                #FIXME: implement p2p connection execution
+                # FIXME: implement p2p connection execution
                 raise Exception("Function execution on p2p connections not yet implemented")
-                #self.connection.call(
-                #None, object_path, self.method_obj.iface_obj.iface_info.name,
-                #self.method_obj.method_info.name, params_gvariant,
-                #GLib.VariantType.new("(s)"), Gio.DBusCallFlags.NONE, -1, None)
+                # self.connection.call(
+                # None, object_path, self.method_obj.iface_obj.iface_info.name,
+                # self.method_obj.method_info.name, params_gvariant,
+                # GLib.VariantType.new("(s)"), Gio.DBusCallFlags.NONE, -1, None)
 
         except Exception as e:
-            #output the exception
+            # output the exception
             self.source_textview.get_buffer().set_text(str(e))
             self.prettyprint_textview.get_buffer().set_text(pformat(str(e)))
 
     def method_connection_bus_cb(self, proxy, res_async, user_data):
         """async callback for executed method"""
         try:
-            #get the result from the dbus method call
+            # get the result from the dbus method call
             result = proxy.call_finish(res_async)
-            #remember the needed time for the method call
+            # remember the needed time for the method call
             method_call_time_end = time.time()
             method_call_time_needed = method_call_time_end - user_data['method_call_time_start']
 
-            #update avg, min, max
+            # update avg, min, max
             user_data['avg'] += method_call_time_needed
             user_data['count'] += 1
             self.label_avg.set_text("%.4f" % (float(user_data['avg'] / user_data['count'])))
@@ -105,7 +105,7 @@ class ExecuteMethodDialog:
             self.label_max.set_text(
                 "%.4f" % max(float(self.label_max.get_text() or "0"), method_call_time_needed))
 
-            #output result
+            # output result
             if result:
                 self.source_textview.get_buffer().set_text(str(result))
                 self.prettyprint_textview.get_buffer().set_text(pformat(result.unpack()[0]))
@@ -113,7 +113,7 @@ class ExecuteMethodDialog:
                 self.prettyprint_textview.get_buffer().set_text(
                     'This method did not return anything')
         except Exception as e:
-            #output the exception
+            # output the exception
             self.source_textview.get_buffer().set_text(str(e))
             self.prettyprint_textview.get_buffer().set_text(pformat(str(e)))
 

@@ -5,10 +5,10 @@
 #   portions taken from the Jokosher project
 #
 try:
-    #python2.x
+    # python2.x
     import ConfigParser as configparser
 except:
-    #python3
+    # python3
     import configparser
 import os
 import re

@@ -42,11 +42,11 @@ class DFeetWindow(Gtk.ApplicationWindow):
         self.session_bus = None
         self.system_bus = None
 
-        #setup the window
+        # setup the window
         self.set_default_size(600, 480)
         self.set_icon_name(package)
 
-        #create actions
+        # create actions
         action = Gio.SimpleAction.new('connect-system-bus', None)
         action.connect('activate', self.__action_connect_system_bus_cb)
         self.add_action(action)
@@ -59,13 +59,13 @@ class DFeetWindow(Gtk.ApplicationWindow):
         action.connect('activate', self.__action_connect_other_bus_cb)
         self.add_action(action)
 
-        #get settings
+        # get settings
         settings = Settings.get_instance()
         self.connect('delete-event', self.__delete_cb)
         self.set_default_size(int(settings.general['windowwidth']),
                               int(settings.general['windowheight']))
 
-        #setup ui
+        # setup ui
         ui = UILoader(self.data_dir, UILoader.UI_MAINWINDOW)
         header = ui.get_widget('headerbar')
         self.set_titlebar(header)
@@ -75,13 +75,13 @@ class DFeetWindow(Gtk.ApplicationWindow):
         self.__stack_child_removed_id = self.stack.connect('remove', self.__stack_child_removed_cb)
         self.connect('destroy', self.__on_destroy)
 
-        #create bus history list and load entries from settings
+        # create bus history list and load entries from settings
         self.__bus_history = []
         for bus in settings.general['addbus_list']:
             if bus != '':
                 self.__bus_history.append(bus)
 
-        #add a System and Session Bus tab
+        # add a System and Session Bus tab
         self.activate_action('connect-system-bus', None)
         self.activate_action('connect-session-bus', None)
 
