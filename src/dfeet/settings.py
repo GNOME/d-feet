@@ -33,21 +33,15 @@ class ConfigTokenizer():
             self.regex = regex
 
         def is_whitespace(self):
-            if self.regex == ConfigTokenizer.WHITESPACE:
-                return True
-            return False
+            return self.regex == ConfigTokenizer.WHITESPACE:
 
         def is_comma(self):
-            if self.regex == ConfigTokenizer.COMMA:
-                return True
-            return False
+            return self.regex == ConfigTokenizer.COMMA:
 
         def is_value(self):
-            if self.regex == ConfigTokenizer.STRING or \
+            return self.regex == ConfigTokenizer.STRING or \
                     self.regex == ConfigTokenizer.NUMBER or \
                     self.regex == ConfigTokenizer.FALLTHROUGH:
-                return True
-            return False
 
         def strip(self, s):
             return self.ENDWHITESPACE.sub('', s)
@@ -58,10 +52,9 @@ class ConfigTokenizer():
         def __str__(self):
             result = ''
             groups = self.match.groups()
-            if groups:
-                for g in groups:
-                    if g is not None:
-                        result = g
+            for g in groups:
+                if g is not None:
+                    result = g
             else:
                 result = self.match.group(0)
 
@@ -136,13 +129,7 @@ class Settings:
         return cls.instance
 
     def decode_list(self, s):
-        result = []
-        lex = ConfigTokenizer(s)
-        for item in lex:
-            if item.is_value():
-                result.append(str(item))
-
-        return result
+        return [str(item) for item in ConfigTokenizer(s) if item.is_value()]
 
     def read(self):
         """
