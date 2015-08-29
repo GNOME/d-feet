@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+from functools import partial
 
 from gi.repository import Gtk, Gio, GLib
 from dfeet.executemethoddialog import ExecuteMethodDialog
@@ -186,48 +187,17 @@ class AddressInfo():
                 # append interfaces to tree model
                 name_iter = self.__treemodel.append(tree_iter,
                                                     ["<b>Interfaces</b>", None])
+                iface_member_names = ["methods", "signals", "properties", "annotations"]
                 for iface in node_info.interfaces:
                     iface_obj = DBusInterface(node_obj, iface)
                     iface_iter = self.__treemodel.append(
                         name_iter,
                         ["%s" % iface.name, iface_obj])
-                    # interface methods
-                    if len(iface.methods) > 0:
-                        iface_methods_iter = self.__treemodel.append(
-                            iface_iter, ["<b>Methods</b>", None])
-                        for iface_method in iface.methods:
-                            method_obj = DBusMethod(iface_obj, iface_method)
-                            self.__treemodel.append(
-                                iface_methods_iter,
-                                ["%s" % method_obj.markup_str, method_obj])
-                    # interface signals
-                    if len(iface.signals) > 0:
-                        iface_signals_iter = self.__treemodel.append(
-                            iface_iter, ["<b>Signals</b>", None])
-                        for iface_signal in iface.signals:
-                            signal_obj = DBusSignal(iface_obj, iface_signal)
-                            self.__treemodel.append(
-                                iface_signals_iter,
-                                ["%s" % signal_obj.markup_str, signal_obj])
-                    # interface properties
-                    if len(iface.properties) > 0:
-                        iface_properties_iter = self.__treemodel.append(
-                            iface_iter, ["<b>Properties</b>", None])
-                        for iface_property in iface.properties:
-                            property_obj = DBusProperty(iface_obj, iface_property)
-                            self.__treemodel.append(
-                                iface_properties_iter,
-                                ["%s" % property_obj.markup_str, property_obj])
-                    # interface annotations
-                    if len(iface.annotations) > 0:
-                        iface_annotations_iter = self.__treemodel.append(
-                            iface_iter, ["<b>Annotations</b>", None])
-                        for iface_annotation in iface.annotations:
-                            annotation_obj = DBusAnnotation(iface_obj, iface_annotation)
-                            self.__treemodel.append(
-                                iface_annotations_iter,
-                                ["%s" % (annotation_obj.markup_str), annotation_obj])
-
+                    iface_get_members = partial(getattr, iface)
+                    iface_set_members = partial(self.__dbus_set_tree_members, iface, 
+                                                iface_obj, iface_iter)
+                    for member in filter(iface_get_members, iface_member_names):
+                        iface_set_members(member)
             # are more nodes left?
             if len(node_info.nodes) > 0:
                 for node in node_info.nodes:
@@ -245,6 +215,17 @@ class AddressInfo():
                 self.__label_unique_name.set_text(self.unique_name)
 
                 self.introspect_box.show_all()
+
+    def __dbus_set_tree_members(self, iface, iface_obj, iface_iter, member):
+        """populate tree model with interface members"""
+        iface_member_funcs = {"methods":DBusMethod, "signals":DBusSignal,
+                              "properties":DBusProperty, "annotations":DBusAnnotation}
+        iface_member_iter = self.__treemodel.append(
+                                iface_iter, ["<b>%s</b>" % member.capitalize(), None])
+        for iface_member in getattr(iface, member):
+            member_obj = iface_member_funcs[member](iface_obj, iface_member)
+            self.__treemodel.append(iface_member_iter, ["%s" % 
+                                        member_obj.markup_str, member_obj])
 
     def __dbus_node_introspect(self, object_path):
         """Introspect the given object path. This function will be called recursive"""
