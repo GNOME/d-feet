@@ -264,6 +264,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='introspect a given dbus address and name')
     parser.add_argument('-p', '--p2p', action='store_true', default=False)
+    parser.add_argument('data_dir')
     parser.add_argument('addr')
     parser.add_argument('name')
     p = parser.parse_args()
@@ -276,7 +277,7 @@ if __name__ == "__main__":
         addr = p.addr
 
     name = p.name
-    ai = AddressInfo(addr, name, None, not p.p2p)
+    ai = AddressInfo(p.data_dir, addr, name, None, not p.p2p)
     win = Gtk.Window()
     win.connect("delete-event", Gtk.main_quit)
     win.set_default_size(1024, 768)
