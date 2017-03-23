@@ -358,6 +358,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description='show a given bus address')
+    parser.add_argument('data_dir')
     parser.add_argument('addr')
     p = parser.parse_args()
 
@@ -368,7 +369,7 @@ if __name__ == "__main__":
     else:
         addr = p.addr
 
-    bw = BusWatch(addr)
+    bw = BusWatch(p.data_dir, addr)
 
     win = Gtk.Window()
     win.connect("delete-event", Gtk.main_quit)
