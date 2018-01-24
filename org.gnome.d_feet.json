@@ -1,5 +1,5 @@
 {
-    "id": "org.gnome.d-feet",
+    "id": "org.gnome.d_feet",
     "runtime": "org.gnome.Platform",
     "runtime-version": "master",
     "branch": "master",

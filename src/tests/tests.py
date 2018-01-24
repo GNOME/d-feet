@@ -16,7 +16,7 @@ import unittest
 
 XML = """
 <node>
-  <interface name='org.gnome.d-feet.TestInterface'>
+  <interface name='org.gnome.d_feet.TestInterface'>
     <method name='HelloWorld'>
       <arg type='s' name='greeting' direction='in'/>
       <arg type='s' name='response' direction='out'/>
@@ -38,8 +38,8 @@ DATA_DIR = os.path.abspath("../../data/")
 class IntrospectionHelperTest(unittest.TestCase):
     """tests for the introspection helper classes"""
     def setUp(self):
-        self.name = "org.gnome.d-feet"
-        self.object_path = "/org/gnome/d-feet"
+        self.name = "org.gnome.d_feet"
+        self.object_path = "/org/gnome/d_feet"
         self.node_info = Gio.DBusNodeInfo.new_for_xml(XML)
 
     def test_dbus_node_info(self):

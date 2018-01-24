@@ -12,7 +12,7 @@ class DFeetApp(Gtk.Application):
         self.package = package
         self.version = version
         self.data_dir = data_dir
-        Gtk.Application.__init__(self, application_id="org.gnome.d-feet",
+        Gtk.Application.__init__(self, application_id="org.gnome.d_feet",
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     # Note that the function in C activate() becomes do_activate() in Python

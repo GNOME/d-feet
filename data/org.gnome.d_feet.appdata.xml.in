@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2013 Thomas Bechtold <thomasbechtold@jpberlin.de> -->
 <component type="desktop">
-  <id>org.gnome.d-feet.desktop</id>
+  <id>org.gnome.d_feet.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
   <_name>D-Feet</_name>

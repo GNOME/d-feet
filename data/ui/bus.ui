@@ -54,7 +54,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="pixel_size">128</property>
-        <property name="icon_name">org.gnome.d-feet</property>
+        <property name="icon_name">org.gnome.d_feet</property>
       </object>
       <packing>
         <property name="expand">True</property>
