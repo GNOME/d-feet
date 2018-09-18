@@ -1,0 +1,15 @@
+image: fedora:rawhide
+
+stages:
+  - build
+
+before_script:
+  - dnf update -y --nogpgcheck
+  - dnf install -y --nogpgcheck desktop-file-utils gettext glib2-devel gobject-introspection-devel gtk3-devel intltool itstool python3-devel python2-pep8 libappstream-glib libwnck3 python3-gobject
+
+build:
+  stage: build
+  script:
+    - PYTHON=python3 ./autogen.sh
+    - make
+    - make check
