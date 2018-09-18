@@ -115,7 +115,7 @@ class AddressInfo():
             # update the object value so markup string is calculated correct
             obj.value = result[0]
             # set new markup string
-            model[iter_][0] = obj.markup_str
+            model[iter_][0] = obj.markup_str(treeview)
         else:
             if treeview.row_expanded(path):
                 treeview.collapse_row(path)
@@ -205,7 +205,7 @@ class AddressInfo():
                             method_obj = DBusMethod(iface_obj, iface_method)
                             self.__treemodel.append(
                                 iface_methods_iter,
-                                ["%s" % method_obj.markup_str, method_obj])
+                                ["%s" % method_obj.markup_str(self.__treeview), method_obj])
                     # interface signals
                     if len(iface.signals) > 0:
                         iface_signals_iter = self.__treemodel.append(
@@ -214,7 +214,7 @@ class AddressInfo():
                             signal_obj = DBusSignal(iface_obj, iface_signal)
                             self.__treemodel.append(
                                 iface_signals_iter,
-                                ["%s" % signal_obj.markup_str, signal_obj])
+                                ["%s" % signal_obj.markup_str(self.__treeview), signal_obj])
                     # interface properties
                     if len(iface.properties) > 0:
                         iface_properties_iter = self.__treemodel.append(
@@ -223,7 +223,7 @@ class AddressInfo():
                             property_obj = DBusProperty(iface_obj, iface_property)
                             self.__treemodel.append(
                                 iface_properties_iter,
-                                ["%s" % property_obj.markup_str, property_obj])
+                                ["%s" % property_obj.markup_str(self.__treeview), property_obj])
                     # interface annotations
                     if len(iface.annotations) > 0:
                         iface_annotations_iter = self.__treemodel.append(
@@ -232,7 +232,8 @@ class AddressInfo():
                             annotation_obj = DBusAnnotation(iface_obj, iface_annotation)
                             self.__treemodel.append(
                                 iface_annotations_iter,
-                                ["%s" % (annotation_obj.markup_str), annotation_obj])
+                                ["%s" % (annotation_obj.markup_str(self.__treeview)),
+                                 annotation_obj])
 
             # are more nodes left?
             if len(node_info.nodes) > 0:

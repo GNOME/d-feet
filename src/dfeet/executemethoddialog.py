@@ -34,7 +34,8 @@ class ExecuteMethodDialog:
         self.label_min = ui.get_widget('label_min')
         self.label_max = ui.get_widget('label_max')
         ui.connect_signals(signal_dict)
-        self.label_method_name.set_markup("%s" % (self.method_obj.markup_str))
+        self.label_method_name.set_markup("%s" % (
+            self.method_obj.markup_str(self.label_method_name)))
         self.label_object_path.set_markup("%s" % (self.method_obj.object_path))
         self.label_interface.set_markup("%s" % (self.method_obj.iface_info.name))
 

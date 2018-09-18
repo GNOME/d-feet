@@ -3,29 +3,28 @@
 from gi.repository import GObject, Gio, Gtk
 from dfeet import dbus_utils
 
-_style_context = None
-_fg_color = "#000000"
+
+def fg_color(widget):
+    if widget is None:
+        style_context = Gtk.StyleContext()
+    else:
+        style_context = widget.get_style_context()
+    color = style_context.get_color(Gtk.StateFlags.NORMAL)
+    return "#%02x%02x%02x" % (
+        int(color.red) * 255,
+        int(color.green) * 255,
+        int(color.blue) * 255,
+    )
 
 
-def fg_color():
-    global _style_context, _fg_color
-    if _style_context is None:
-        _style_context = Gtk.StyleContext()
-        color = _style_context.get_color(Gtk.StateFlags.NORMAL)
-        _fg_color = "#%02x%02x%02x" % (
-            int(color.red) * 255,
-            int(color.green) * 255,
-            int(color.blue) * 255,
-        )
-    return _fg_color
-
-
-def args_signature_markup(arg_signature):
+def args_signature_markup(arg_signature, widget):
     return '<small><span foreground="#2E8B57">%s</span></small>' % (arg_signature)
 
 
-def args_name_markup(arg_name):
-    return '<small><span foreground="%s">%s</span></small>' % (fg_color(), arg_name)
+def args_name_markup(arg_name, widget):
+    return '<small><span foreground="%s">%s</span></small>' % (
+        fg_color(widget),
+        arg_name)
 
 
 class DBusNode(GObject.GObject):
@@ -91,8 +90,7 @@ class DBusProperty(DBusInterface):
     def value(self, new_val):
         self.__value = new_val
 
-    @property
-    def markup_str(self):
+    def markup_str(self, widget):
         sig = dbus_utils.sig_to_string(self.property_info.signature)
         readwrite = list()
         if self.readable:
@@ -100,8 +98,9 @@ class DBusProperty(DBusInterface):
         if self.writable:
             readwrite.append("write")
         s = "%s %s <small>(%s)</small>" % (
-            args_signature_markup(sig),
-            args_name_markup(self.property_info.name), " / ".join(readwrite))
+            args_signature_markup(sig, widget),
+            args_name_markup(self.property_info.name, widget),
+            " / ".join(readwrite))
         if self.value is not None:
             s += " = %s" % (self.value,)
         return s
@@ -147,17 +146,18 @@ class DBusSignal(DBusInterface):
             args.append({'signature': sig, 'name': arg.name})
         return args
 
-    @property
-    def args_markup_str(self):
+    def args_markup_str(self, widget):
         result = ''
         result += '<span foreground="#FF00FF">(</span>'
-        result += ', '.join('%s' % (args_signature_markup(arg['signature'])) for arg in self.args)
+        result += ', '.join(
+            '%s' % (args_signature_markup(arg['signature'], widget))
+            for arg in self.args
+        )
         result += '<span foreground="#FF00FF">)</span>'
         return result
 
-    @property
-    def markup_str(self):
-        return "%s %s" % (self.signal_info.name, self.args_markup_str)
+    def markup_str(self, widget):
+        return "%s %s" % (self.signal_info.name, self.args_markup_str(widget))
 
 
 class DBusMethod(DBusInterface):
@@ -182,10 +182,12 @@ class DBusMethod(DBusInterface):
     def method_info(self):
         return self.__method_info
 
-    @property
-    def markup_str(self):
+    def markup_str(self, widget):
         return "%s %s <b>↦</b> %s" % (
-            self.method_info.name, self.in_args_markup_str, self.out_args_markup_str)
+            self.method_info.name,
+            self.in_args_markup_str(widget),
+            self.out_args_markup_str(widget),
+        )
 
     @property
     def in_args(self):
@@ -219,24 +221,23 @@ class DBusMethod(DBusInterface):
 
         return result[0:-2]
 
-    def __args_markup_str(self, args):
+    def __args_markup_str(self, args, widget):
         """markup a given list of args"""
         result = ''
         result += '<span foreground="#FF00FF">(</span>'
         result += ', '.join(
             '%s %s' % (
-                args_signature_markup(arg['signature']),
-                args_name_markup(arg['name'])) for arg in args)
+                args_signature_markup(arg['signature'], widget),
+                args_name_markup(arg['name'], widget)
+            ) for arg in args)
         result += '<span foreground="#FF00FF">)</span>'
         return result
 
-    @property
-    def in_args_markup_str(self):
-        return self.__args_markup_str(self.in_args)
+    def in_args_markup_str(self, widget):
+        return self.__args_markup_str(self.in_args, widget)
 
-    @property
-    def out_args_markup_str(self):
-        return self.__args_markup_str(self.out_args)
+    def out_args_markup_str(self, widget):
+        return self.__args_markup_str(self.out_args, widget)
 
 
 class DBusAnnotation(DBusInterface):
@@ -253,6 +254,5 @@ class DBusAnnotation(DBusInterface):
     def annotation_info(self):
         return self.__annotation_info
 
-    @property
-    def markup_str(self):
+    def markup_str(self, widget):
         return "%s: %s" % (self.annotation_info.key, self.annotation_info.value)
