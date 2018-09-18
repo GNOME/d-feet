@@ -69,7 +69,7 @@ class IntrospectionHelperTest(unittest.TestCase):
         # get the markup string with value for struct prop (see bgo #702593)
         obj_prop = DBusProperty(obj_iface, obj_iface.iface_info.properties[2])
         obj_prop.value = ("string", 1, 2)
-        self.assertIn("'string', 1, 2", obj_prop.markup_str)
+        self.assertIn("'string', 1, 2", obj_prop.markup_str(None))
 
     def test_dbus_signal(self):
         """test DBusSignal class"""
