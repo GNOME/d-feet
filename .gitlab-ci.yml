@@ -1,0 +1,76 @@
+stages:
+- test
+- review
+
+variables:
+    BUNDLE: "dfeet-git.flatpak"
+
+fedora:
+    stage: test
+    image: fedora:rawhide
+    before_script:
+        - dnf update -y
+        - dnf install -y desktop-file-utils gettext glib2-devel gobject-introspection-devel gtk3-devel intltool itstool python3-devel python3-pycodestyle libappstream-glib libwnck3 python3-gobject python3-gobject make yelp-tools xorg-x11-server-Xvfb
+    script:
+        - PYTHON=/usr/bin/python3 ./autogen.sh
+        - make
+        - xvfb-run -a -s "-screen 0 1024x768x24" make check
+    artifacts:
+        when: on_failure
+        name: "d-feet-${CI_COMMIT_REF_NAME}-${CI_JOB_NAME}"
+        paths:
+            - "${CI_PROJECT_DIR}/src/tests/test-suite.log"
+
+flatpak:
+    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
+    stage: test
+
+    variables:
+        # Replace with your manifest path
+        MANIFEST_PATH: "org.gnome.dfeet.json"
+        RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
+        FLATPAK_MODULE: "d-feet"
+        CONFIGURE_ARGS: "--disable-tests"
+        DBUS_ID: "org.gnome.dfeet"
+
+    script:
+        - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
+        - flatpak build app ./autogen.sh --prefix=/app --libdir=/app/lib ${CONFIGURE_ARGS}
+        - flatpak build app make install
+        - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
+        #- xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app make check
+        - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
+
+    artifacts:
+        paths:
+            - ${BUNDLE}
+            - config.log
+        expire_in: 30 days
+
+    cache:
+        paths:
+             - .flatpak-builder/cache
+
+review:
+    stage: review
+    dependencies:
+        - flatpak
+    script:
+        - echo "Generating flatpak deployment"
+    artifacts:
+        paths:
+            - ${BUNDLE}
+        expire_in: 30 days
+    environment:
+        name: review/$CI_COMMIT_REF_NAME
+        url: https://gitlab.gnome.org/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
+        on_stop: stop_review
+
+stop_review:
+    stage: review
+    script:
+        - echo "Stopping flatpak deployment"
+    when: manual
+    environment:
+        name: review/$CI_COMMIT_REF_NAME
+        action: stop
