@@ -14,12 +14,17 @@
         "--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
         "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
+    "build-options" : {
+        "env": {
+            "PYTHON": "/usr/bin/python3"
+        }
+    },
     "modules": [
         {
             "name": "pycairo",
             "buildsystem": "simple",
             "build-commands": [
-                "python2 setup.py install --prefix=/app"
+                "python3 setup.py install --prefix=/app"
             ],
             "sources": [
                 {
@@ -36,13 +41,8 @@
             "name": "pygobject",
             "buildsystem": "simple",
             "build-commands": [
-                "python2 setup.py install --prefix=/app"
+                "python3 setup.py install --prefix=/app"
             ],
-            "build-options" : {
-                "env": {
-                    "PYTHON": "/usr/bin/python2"
-                }
-            },
             "ensure-writable" : [
                 "/lib/python*/site-packages/easy-install.pth"
             ],
@@ -55,7 +55,7 @@
             "cleanup": [
                 "/include",
                 "/lib/pkgconfig",
-                "/lib/python2.7/site-packages/gi/*.la"
+                "/lib/python*/site-packages/gi/*.la"
             ]
         },
         {
