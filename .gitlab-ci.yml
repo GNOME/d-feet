@@ -30,7 +30,7 @@ flatpak:
         MANIFEST_PATH: "org.gnome.dfeet.json"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
         FLATPAK_MODULE: "d-feet"
-        CONFIGURE_ARGS: "--disable-tests"
+        CONFIGURE_ARGS: "PYTHON=/usr/bin/python3 --disable-tests"
         DBUS_ID: "org.gnome.dfeet"
 
     script:
