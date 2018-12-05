@@ -22,8 +22,6 @@ class DFeetApp(Gtk.Application):
     # Note that the function in C startup() becomes do_startup() in Python
     def do_startup(self):
         Gtk.Application.do_startup(self)
-        builder = Gtk.Builder()
-        builder.add_from_file(os.path.join(self.data_dir, "ui", "app-menu.ui"))
 
         # create actions
         action = Gio.SimpleAction.new("about", None)
@@ -37,8 +35,6 @@ class DFeetApp(Gtk.Application):
         action = Gio.SimpleAction.new("quit", None)
         action.connect("activate", self.action_quit_cb)
         self.add_action(action)
-
-        self.set_app_menu(builder.get_object("app-menu"))
 
     def action_quit_cb(self, action, parameter):
         self.quit()
