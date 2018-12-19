@@ -80,8 +80,9 @@
         },
         {
             "name": "d-feet",
+            "buildsystem": "meson",
             "config-opts": [
-                "--disable-tests"
+                "-Dtests=false"
             ],
             "sources": [
                 {
