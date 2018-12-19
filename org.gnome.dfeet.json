@@ -14,11 +14,6 @@
         "--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
         "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
-    "build-options" : {
-        "env": {
-            "PYTHON": "/usr/bin/python3"
-        }
-    },
     "modules": [
         {
             "name": "pycairo",
@@ -80,8 +75,9 @@
         },
         {
             "name": "d-feet",
+            "buildsystem": "meson",
             "config-opts": [
-                "--disable-tests"
+                "-Dtests=false"
             ],
             "sources": [
                 {
