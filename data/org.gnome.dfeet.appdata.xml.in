@@ -4,14 +4,14 @@
   <id>org.gnome.dfeet.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
-  <_name>D-Feet</_name>
-  <_summary>Debug D-Bus applications</_summary>
+  <name>D-Feet</name>
+  <summary>Debug D-Bus applications</summary>
   <description>
-    <_p>
+    <p>
       A simple application for debugging the message bus system D-Bus.
       D-Feet can be used to inspect D-Bus interfaces of running programs and
       invoke methods on those interfaces.
-    </_p>
+    </p>
   </description>
   <screenshots>
     <screenshot height="787" type="default" width="1400">

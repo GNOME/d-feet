@@ -3,9 +3,9 @@
 data/org.gnome.dfeet.appdata.xml.in
 data/org.gnome.dfeet.desktop.in.in
 data/org.gnome.dfeet.gschema.xml
-[type: gettext/glade]data/ui/addconnectiondialog.ui
-[type: gettext/glade]data/ui/bus.ui
-[type: gettext/glade]data/ui/executedialog.ui
-[type: gettext/glade]data/ui/introspection.ui
-[type: gettext/glade]data/ui/mainwindow.ui
+data/ui/addconnectiondialog.ui
+data/ui/bus.ui
+data/ui/executedialog.ui
+data/ui/introspection.ui
+data/ui/mainwindow.ui
 src/dfeet/application.py
