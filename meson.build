@@ -31,11 +31,6 @@ data_dir = source_root / 'data'
 po_dir = source_root / 'po'
 src_dir = source_root / 'src'
 
-intltool_merge = find_program('intltool-merge')
-intltool_cache = join_paths(po_dir, '.intltool-merge-cache')
-intltool_desktop_cmd = [intltool_merge, '-d', '-u', '-c', intltool_cache, po_dir, '@INPUT@', '@OUTPUT@']
-intltool_xml_cmd = [intltool_merge, '-x', '-u', '-c', intltool_cache, po_dir, '@INPUT@', '@OUTPUT@']
-
 top_inc = include_directories('.')
 
 df_conf = configuration_data()

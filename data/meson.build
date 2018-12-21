@@ -12,22 +12,23 @@ desktop_in = configure_file(
   configuration: desktop_conf,
 )
 
-custom_target(
+i18n.merge_file(
   desktop,
+  type: 'desktop',
   input: desktop_in,
   output: '@BASENAME@',
-  command: intltool_desktop_cmd,
+  po_dir: po_dir,
   install: true,
   install_dir: df_datadir / 'applications',
 )
 
 appdata = df_namespace + '.appdata.xml'
 
-custom_target(
+i18n.merge_file(
   appdata,
   input: appdata + '.in',
   output: '@BASENAME@',
-  command: intltool_xml_cmd,
+  po_dir: po_dir,
   install: true,
   install_dir: df_datadir / 'metainfo',
 )
