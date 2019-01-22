@@ -3,7 +3,7 @@
 import sys
 import os
 import tempfile
-sys.path.insert(0, os.path.abspath(os.path.join(__file__, "../../")))
+sys.path.insert(0, os.path.abspath(os.path.join(__file__, "@top_srcdir@")))
 
 from gi.repository import Gtk
 from gi.repository import Gio
@@ -35,7 +35,7 @@ XML = """
 </node>
 """
 
-DATA_DIR = os.path.abspath("../../data/")
+DATA_DIR = os.path.abspath("@DATA_DIR@")
 
 
 class IntrospectionHelperTest(unittest.TestCase):

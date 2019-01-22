@@ -6,7 +6,9 @@ EXTRA_DIST = tests.py.in
 CLEANFILES = $(check_SCRIPTS)
 
 tests.py: tests.py.in
-	$(AM_V_GEN) sed -e 's|@PYTHON[@]|$(PYTHON)|g' $< > $@
+	$(AM_V_GEN) sed -e 's|@PYTHON[@]|$(PYTHON)|g' \
+			-e 's|@DATA_DIR[@]|..\/..\/data|g' \
+			-e 's|@top_srcdir[@]|$(top_srcdir)|g' $< > $@
 	chmod +x $@
 
 # Default pycodestyle --exclude + emacs backup files
