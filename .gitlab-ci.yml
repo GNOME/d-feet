@@ -10,7 +10,7 @@ fedora:
     image: fedora:rawhide
     before_script:
         - dnf update -y
-        - dnf install -y desktop-file-utils gettext glib2-devel gobject-introspection-devel gtk3-devel intltool itstool python3-devel python3-pycodestyle libappstream-glib libwnck3 python3-gobject python3-gobject make yelp-tools xorg-x11-server-Xvfb
+        - dnf install -y dbus-daemon desktop-file-utils gettext glib2-devel gobject-introspection-devel gtk3-devel intltool itstool libappstream-glib libwnck3 make python3-devel python3-gobject python3-gobject python3-pycodestyle xorg-x11-server-Xvfb yelp-tools
     script:
         - PYTHON=/usr/bin/python3 ./autogen.sh
         - make
