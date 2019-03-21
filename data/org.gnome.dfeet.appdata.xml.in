@@ -24,4 +24,5 @@
   <update_contact>thomasbechtold_at_jpberlin_de</update_contact>
   <project_group>GNOME</project_group>
   <translation type="gettext">d-feet</translation>
+  <content_rating type="oars-1.1" />
 </component>
