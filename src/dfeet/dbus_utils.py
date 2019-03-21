@@ -121,7 +121,7 @@ def sig_to_type_list(sig):
             for item in type_:
                 result.append(item)
         else:
-                result.append(type_)
+            result.append(type_)
 
         i += 1
 
