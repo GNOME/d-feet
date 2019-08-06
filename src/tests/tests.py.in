@@ -89,16 +89,26 @@ class AddressInfoTest(unittest.TestCase):
     """tests for the AddressInfo class and the introspection stuff"""
 
     def setUp(self):
+        print("setUp 1")
         self.bus = Gio.TestDBus()
+        print("setUp 2")
         self.bus.unset()
+        print("setUp 3")
         self.bus.up()
+        print("setUp 4")
 
     def tearDown(self):
+        print("tearDown 1")
         self.bus.stop()
+        print("tearDown 2")
 
     def test_bus(self):
         """introspect a name on the system bus"""
-        ai = AddressInfo(DATA_DIR, self.bus.get_bus_address(), None, "org.freedesktop.DBus")
+        print("HELLO")
+        address = self.bus.get_bus_address()
+        print("ABC")
+        ai = AddressInfo(DATA_DIR, address, None, "org.freedesktop.DBus")
+        print("OK")
 
     @unittest.skip("TODO:peer to peer test not implemented")
     def test_peer_to_peer(self):
