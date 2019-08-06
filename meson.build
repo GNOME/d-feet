@@ -2,7 +2,7 @@ project(
   'd-feet',
   version: '0.3.15',
   license: 'GPL2',
-  meson_version: '>= 0.49.0',
+  meson_version: '>= 0.50.0',
 )
 
 df_name = meson.project_name()
