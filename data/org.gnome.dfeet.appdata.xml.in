@@ -25,4 +25,19 @@
   <project_group>GNOME</project_group>
   <translation type="gettext">d-feet</translation>
   <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="0.3.15" date="2019-08-06">
+      <description>
+        <p>D-Feet 0.3.15 is here, with various cosmetic improvements:</p>
+        <ul>
+          <li>Restructure menus to follow GNOME 3.32 menu guidelines</li>
+          <li>New app icon as part of the GNOME 3.32 icon redesign</li>
+          <li>Add OARS content-rating data</li>
+          <li>Many translation updates</li>
+          <li>New Meson-based build system</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
