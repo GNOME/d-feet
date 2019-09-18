@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/dfeet">
+    <file compressed="true" preprocess="xml-stripblanks" alias="addconnectiondialog.ui">ui/addconnectiondialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="bus.ui">ui/bus.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="executedialog.ui">ui/executedialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="introspection.ui">ui/introspection.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="mainwindow.ui">ui/mainwindow.ui</file>
+  </gresource>
+</gresources>

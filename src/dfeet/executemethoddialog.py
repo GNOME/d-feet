@@ -3,43 +3,46 @@ import time
 from pprint import pformat
 from gi.repository import GLib, Gio, Gtk
 
-from dfeet.uiloader import UILoader
+
+@Gtk.Template(resource_path='/org/gnome/dfeet/executedialog.ui')
+class ExecuteMethodDialog(Gtk.Dialog):
+
+    __gtype_name__ = 'ExecuteMethodDialog'
+
+    label_method_name = Gtk.Template.Child()
+    label_bus_name = Gtk.Template.Child()
+    label_interface = Gtk.Template.Child()
+    label_object_path = Gtk.Template.Child()
+
+    source_textview = Gtk.Template.Child()
+    parameter_textview = Gtk.Template.Child()
+    prettyprint_textview = Gtk.Template.Child()
+
+    method_exec_count_spinbutton = Gtk.Template.Child()
+
+    label_avg = Gtk.Template.Child()
+    label_min = Gtk.Template.Child()
+    label_max = Gtk.Template.Child()
 
 
-class ExecuteMethodDialog:
-    def __init__(self, data_dir, connection, connection_is_bus, bus_name,
+    def __init__(self, connection, connection_is_bus, bus_name,
                  method_obj, parent_window):
-        signal_dict = {
-            'execute_dbus_method_cb': self.execute_cb,
-            'execute_dialog_close_cb': self.close_cb
-            }
+        super(ExecuteMethodDialog, self).__init__()
+        self.init_template('ExecuteMethodDialog')
+
+        self.set_transient_for(parent_window)
 
         self.connection = connection
         self.connection_is_bus = connection_is_bus
         self.bus_name = bus_name
         self.method_obj = method_obj
 
-        ui = UILoader(data_dir, UILoader.UI_EXECUTEDIALOG)
-        self.dialog = ui.get_root_widget()
-        self.dialog.set_transient_for(parent_window)
-        self.label_method_name = ui.get_widget('label_method_name')
-        self.label_bus_name = ui.get_widget('label_bus_name')
-        self.label_object_path = ui.get_widget('label_object_path')
-        self.label_interface = ui.get_widget('label_interface')
-        self.notebook = ui.get_widget('notebook1')
-        self.parameter_textview = ui.get_widget('parametertextview1')
-        self.source_textview = ui.get_widget('sourcetextview1')
-        self.prettyprint_textview = ui.get_widget('prettyprinttextview1')
-        self.method_execution_count_spinbutton = ui.get_widget('method_exec_count_spinbutton')
-        self.label_avg = ui.get_widget('label_avg')
-        self.label_min = ui.get_widget('label_min')
-        self.label_max = ui.get_widget('label_max')
-        ui.connect_signals(signal_dict)
         self.label_method_name.set_markup("%s" % (self.method_obj.markup_str))
         self.label_bus_name.set_text(self.bus_name)
         self.label_object_path.set_markup("%s" % (self.method_obj.object_path))
         self.label_interface.set_markup("%s" % (self.method_obj.iface_info.name))
 
+    @Gtk.Template.Callback('execute_dbus_method_cb')
     def execute_cb(self, widget):
         # get given parameters
         buf = self.parameter_textview.get_buffer()
@@ -73,7 +76,8 @@ class ExecuteMethodDialog:
                                                self.method_obj.iface_info.name,
                                                None)
                 # call the function
-                for i in range(0, self.method_execution_count_spinbutton.get_value_as_int()):
+                method_exec_count = self.method_exec_count_spinbutton.get_value_as_int()
+                for i in range(0, method_exec_count):
                     user_data['method_call_time_start'] = time.time()
                     proxy.call(
                         self.method_obj.method_info.name, params_gvariant,
@@ -121,11 +125,7 @@ class ExecuteMethodDialog:
             # output the exception
             self.source_textview.get_buffer().set_text(str(e))
             self.prettyprint_textview.get_buffer().set_text(pformat(str(e)))
-
-    def run(self):
-        response = self.dialog.run()
-        if response == Gtk.ResponseType.DELETE_EVENT or response == Gtk.ResponseType.CLOSE:
-            self.dialog.destroy()
-
+        
+    @Gtk.Template.Callback('execute_dialog_close_cb')
     def close_cb(self, widget):
-        self.dialog.destroy()
+        self.destroy()

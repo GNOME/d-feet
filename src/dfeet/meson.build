@@ -8,7 +8,6 @@ df_data = files(
   'introspection_helper.py',
   'introspection.py',
   'settings.py',
-  'uiloader.py',
   'wnck_utils.py',
   'window.py',
 )

@@ -1,78 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0 -->
 <interface>
-  <!-- interface-requires gtk+ 3.10 -->
-  <menu id="gear_menu">
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">Connect to System Bus</attribute>
-        <attribute name="action">win.connect-system-bus</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Connect to Session Bus</attribute>
-        <attribute name="action">win.connect-session-bus</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Connect to other Bus</attribute>
-        <attribute name="action">win.connect-other-bus</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">Close Bus</attribute>
-        <attribute name="action">win.close-bus</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">About D-Feet</attribute>
-        <attribute name="action">app.about</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Help</attribute>
-        <attribute name="action">app.help</attribute>
-        <attribute name="accel">F1</attribute>
-      </item>
-    </section>
-  </menu>
-  <object class="GtkHeaderBar" id="headerbar">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="show-close-button">True</property>
-    <child type="title">
-      <object class="GtkStackSwitcher" id="stack_switcher">
-        <property name="visible">True</property>
-        <property name="valign">center</property>
-        <property name="stack">buses_stack</property>
-      </object>
-    </child>
+  <requires lib="gtk+" version="3.12" />
+  <object class="GtkPopoverMenu" id="popover1">
     <child>
-      <object class="GtkMenuButton" id="gear_menu_button">
+      <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="valign">center</property>
         <property name="can_focus">False</property>
-        <property name="sensitive">True</property>
-        <property name="action_name">win.gear-menu</property>
-        <property name="menu_model">gear_menu</property>
-        <style>
-          <class name="image-button"/>
-        </style>
+        <property name="margin">6</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkImage" id="gear_image">
+          <object class="GtkModelButton"> 
             <property name="visible">True</property>
-            <property name="icon_size">1</property>
-            <property name="icon_name">open-menu-symbolic</property>
+            <property name="action_name">win.connect-system-bus</property>
+            <property name="text" translatable="yes">Connect to System Bus</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="action_name">win.connect-session-bus</property>
+            <property name="text" translatable="yes">Connect to Session Bus</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="action_name">win.connect-other-bus</property>
+            <property name="text" translatable="yes">Connect to other Bus</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="action_name">win.close-bus</property>
+            <property name="text" translatable="yes">Close Bus</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="action_name">app.help</property>
+            <property name="text" translatable="yes">Help</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="action_name">app.about</property>
+            <property name="text" translatable="yes">About D-Feet</property>
           </object>
         </child>
       </object>
-      <packing>
-        <property name="pack_type">end</property>
-      </packing>
     </child>
   </object>
-  <object class="GtkStack" id="buses_stack">
-    <property name="visible">True</property>
+
+  <template class="DFeetWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
-    <property name="transition-type">slide-left-right</property>
-    <property name="transition-duration">300</property>
-  </object>
+    <property name="default_width">600</property>
+    <property name="default_height">480</property>
+    <property name="icon_name">org.gnome.dfeet</property>
+    <signal name="delete-event" handler="window_deleted" swapped="no" />
+    <child>
+      <object class="GtkStack" id="buses_stack">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="transition_duration">300</property>
+        <property name="transition_type">slide-left-right</property>
+        <signal name="add" handler="stack_child_added" swapped="no" />
+        <signal name="remove" handler="stack_child_removed" swapped="no" />
+        <child>
+          <placeholder />
+        </child>
+      </object>
+    </child>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="headerbar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="show_close_button">True</property>
+        <child type="title">
+          <object class="GtkStackSwitcher" id="stack_switcher">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">center</property>
+            <property name="stack">buses_stack</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="gear_menu_button">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
+            <property name="valign">center</property>
+            <property name="popover">popover1</property>
+            <child>
+              <object class="GtkImage" id="gear_image">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">open-menu-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+            </style>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </template>
 </interface>

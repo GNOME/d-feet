@@ -42,8 +42,7 @@ locale.textdomain("@GETTEXT_PACKAGE@")
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject
-from dfeet.application import DFeetApp
+from gi.repository import Gio, Gtk, GObject
 
 
 if __name__ == "__main__":
@@ -53,6 +52,10 @@ if __name__ == "__main__":
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         Gtk.IconTheme.get_default().prepend_search_path(
             os.path.join(os.path.dirname(__file__), "..", "data", "icons"))
+    resource = Gio.resource_load(os.path.join(data_dir, 'org.gnome.dfeet.gresource'))
+    Gio.Resource._register(resource)
+
     #start the application
-    app = DFeetApp(package="@PACKAGE_NAME@", version="@PACKAGE_VERSION@", data_dir=data_dir)
+    from dfeet.application import DFeetApp
+    app = DFeetApp(package="@PACKAGE_NAME@", version="@PACKAGE_VERSION@")
     sys.exit(app.run(sys.argv))

@@ -3,15 +3,15 @@ from __future__ import print_function
 
 from gi.repository import GObject, Gtk, Gio
 
-from dfeet.uiloader import UILoader
 from dfeet.introspection import AddressInfo
 from dfeet.wnck_utils import IconTable
 
 
-class BusNameBox(Gtk.VBox):
+class BusNameBox(Gtk.Box):
     """class to represent a BusName (eg 'org.freedesktop.NetworkManager')"""
     def __init__(self, bus_name, unique_name):
-        super(BusNameBox, self).__init__(spacing=5, expand=True)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL, spacing=5, expand=True)
+
         self.__bus_name = bus_name
         self.__unique_name = unique_name
         self.__process_id = 0
@@ -20,12 +20,14 @@ class BusNameBox(Gtk.VBox):
         self.__icon_table = IconTable.get_instance()
         self.__icon_image = Gtk.Image.new_from_pixbuf(self.__icon_table.default_icon)
 
-        self.__hbox = Gtk.HBox(spacing=5, halign=Gtk.Align.START)
+        self.__hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, 
+                              spacing=5, halign=Gtk.Align.START)
         self.pack_start(self.__hbox, True, True, 0)
         # icon
         self.__hbox.pack_start(self.__icon_image, True, True, 0)
         # other information
-        self.__vbox_right = Gtk.VBox(spacing=5, expand=True)
+        self.__vbox_right = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, 
+                                    spacing=5, expand=True)
         self.__hbox.pack_start(self.__vbox_right, True, True, 0)
 
         # first element
@@ -111,23 +113,23 @@ class BusNameBox(Gtk.VBox):
         # update the shown widget
         self.__update_widget()
 
+@Gtk.Template(resource_path='/org/gnome/dfeet/bus.ui')
+class BusWatch(Gtk.Box):
 
-class BusWatch(object):
+    __gtype_name__ = 'BusWatch'
+    
+    bus_listbox = Gtk.Template.Child()
+    bus_search_entry = Gtk.Template.Child()
+
     """watch for a given bus"""
-    def __init__(self, data_dir, bus_address):
-        self.__data_dir = data_dir
+    def __init__(self, bus_address):
+        super(BusWatch, self).__init__()
+        self.init_template('BusWatch')
         self.__bus_address = bus_address
-        # setup UI
-        ui = UILoader(self.__data_dir, UILoader.UI_BUS)
-        self.__box_bus = ui.get_root_widget()
-        self.__scrolledwindow_listbox = ui.get_widget("scrolledwindow_listbox")
-        self.__bus_name_filter = ui.get_widget('entry_filter')
-        # create a listbox for all the busnames
-        self.__listbox = Gtk.ListBox(hexpand=True, vexpand=True, expand=True)
-        self.__listbox.set_sort_func(self.__listbox_sort_by_name, None)
-        self.__listbox.set_filter_func(self.__listbox_filter_by_name, None)
-        self.__scrolledwindow_listbox.add(self.__listbox)
-        self.__scrolledwindow_listbox.show_all()
+        
+        self.bus_listbox.set_sort_func(self.__listbox_sort_by_name, None)
+        self.bus_listbox.set_filter_func(self.__listbox_filter_by_name, None)
+
         # setup the bus connection
         if self.__bus_address == Gio.BusType.SYSTEM or self.__bus_address == Gio.BusType.SESSION:
             # TODO: do this async
@@ -145,14 +147,6 @@ class BusWatch(object):
         # setup signals
         self.connection.signal_subscribe(None, "org.freedesktop.DBus", "NameOwnerChanged",
                                          None, None, 0, self.__name_owner_changed_cb, None)
-
-        # refilter if someone wants to filter the busbox list
-        self.__bus_name_filter.connect("changed",
-                                       self.__bus_name_filter_changed_cb)
-
-        # change bus detail tree if a different bus is selected
-        self.__listbox.connect("row-selected",
-                               self.__listbox_row_selected_cb)
 
         # TODO: do this async
         self.bus_proxy = Gio.DBusProxy.new_sync(self.connection,
@@ -175,18 +169,20 @@ class BusWatch(object):
     @property
     def box_bus(self):
         """the main widget for the bus"""
-        return self.__box_bus
+        return self
 
+    @Gtk.Template.Callback('bus_name_filter_changed')
     def __bus_name_filter_changed_cb(self, bus_name_filter):
         """someone typed something in the searchbox - refilter"""
-        self.__listbox.invalidate_filter()
+        self.bus_listbox.invalidate_filter()
 
+    @Gtk.Template.Callback('listbox_row_selected')
     def __listbox_row_selected_cb(self, listbox, listbox_row):
         """someone selected a different row of the listbox"""
-        childs = self.box_bus.get_children()
+        childs = self.get_children()
         # never remove first element - that's the listbox with the busnames
         if len(childs) > 1:
-            self.box_bus.remove(childs[-1])
+            self.remove(childs[-1])
 
         try:
             del(self.__addr_info)
@@ -198,13 +194,12 @@ class BusWatch(object):
             row_childs = listbox_row.get_children()
             bus_name_box = row_childs[0]
             # add the introspection info to the left side
-            self.__addr_info = AddressInfo(self.__data_dir,
-                                           self.__bus_address,
+            self.__addr_info = AddressInfo(self.__bus_address,
                                            bus_name_box.bus_name,
                                            bus_name_box.unique_name,
                                            connection_is_bus=True)
-            self.box_bus.pack_end(self.__addr_info.introspect_box, True, True, 0)
-        self.box_bus.show_all()
+            self.pack_end(self.__addr_info, True, True, 0)
+        self.show_all()
 
     def __name_owner_changed_cb(self, connection, sender_name,
                                 object_path, interface_name, signal_name,
@@ -229,7 +224,7 @@ class BusWatch(object):
 
     def __listbox_find_bus_name(self, bus_name):
         """find the given busname in the listbox or return None if not found"""
-        for listbox_child in self.__listbox.get_children():
+        for listbox_child in self.bus_listbox.get_children():
             if listbox_child.get_children()[0].bus_name == bus_name:
                 return listbox_child
         # busname not found
@@ -239,7 +234,7 @@ class BusWatch(object):
         """remove the given busname from the listbox"""
         obj = self.__listbox_find_bus_name(bus_name)
         if obj:
-            self.__listbox.remove(obj)
+            self.bus_listbox.remove(obj)
             # if bus is activatable, add the bus name again
             if bus_name in self.__activatable_names:
                 bnb = BusNameBox(bus_name, '')
@@ -257,7 +252,7 @@ class BusWatch(object):
             bus_name_box = bn.get_children()[0]
         else:
             # add busnamebox to the list
-            self.__listbox.add(bus_name_box)
+            self.bus_listbox.add(bus_name_box)
 
         # update bus info stuff
         self.bus_proxy.GetConnectionUnixProcessID(
@@ -319,7 +314,7 @@ class BusWatch(object):
 
     def __listbox_filter_by_name(self, row, user_data):
         bus_name_box_list = row.get_children()
-        return self.__bus_name_filter.get_text().lower() in bus_name_box_list[0].bus_name.lower()
+        return self.bus_search_entry.get_text().lower() in bus_name_box_list[0].bus_name.lower()
 
     def __listbox_sort_by_name(self, row1, row2, user_data):
         """sort function for listbox"""
@@ -372,7 +367,7 @@ if __name__ == "__main__":
     win = Gtk.Window()
     win.connect("delete-event", Gtk.main_quit)
     win.set_default_size(1024, 768)
-    win.add(bw.box_bus)
+    win.add(bw)
     win.show_all()
     try:
         Gtk.main()

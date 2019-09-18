@@ -1,5 +1,4 @@
 subdir('icons')
-subdir('ui')
 
 desktop_conf = configuration_data()
 desktop_conf.set('PACKAGE', df_name)
@@ -36,4 +35,12 @@ i18n.merge_file(
 install_data(
   df_namespace + '.gschema.xml',
   install_dir: gio_schemasdir,
+)
+
+gnome.compile_resources(
+  df_namespace,
+  df_namespace + '.gresource.xml',
+  gresource_bundle: true,
+  install_dir: df_datadir / meson.project_name(),
+  install: true
 )

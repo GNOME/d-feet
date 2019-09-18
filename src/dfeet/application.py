@@ -11,16 +11,16 @@ _ = gettext.gettext
 
 class DFeetApp(Gtk.Application):
 
-    def __init__(self, package, version, data_dir):
+    def __init__(self, package, version):
         self.package = package
         self.version = version
-        self.data_dir = data_dir
         Gtk.Application.__init__(self, application_id="org.gnome.dfeet",
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     # Note that the function in C activate() becomes do_activate() in Python
     def do_activate(self):
-        self._main_win = DFeetWindow(self, self.version, self.data_dir)
+        self._main_win = DFeetWindow()
+        self._main_win.set_application(self)
 
     # Note that the function in C startup() becomes do_startup() in Python
     def do_startup(self):

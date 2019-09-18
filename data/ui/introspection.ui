@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkBox" id="box_introspectview">
+  <requires lib="gtk+" version="3.12"/>
+  <object class="GtkTreeStore" id="treestore">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+      <!-- column-name GObject1 -->
+      <column type="GObject"/>
+    </columns>
+  </object>
+  <template class="AddressInfo" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
@@ -20,14 +29,12 @@
                 <property name="halign">start</property>
                 <property name="label" translatable="yes">Unique name:</property>
                 <attributes>
-                 <attribute name="weight" value="bold"/>
+                  <attribute name="weight" value="bold"/>
                 </attributes>
               </object>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">2</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -37,14 +44,12 @@
                 <property name="halign">start</property>
                 <property name="label" translatable="yes">Name:</property>
                 <attributes>
-                 <attribute name="weight" value="bold"/>
+                  <attribute name="weight" value="bold"/>
                 </attributes>
               </object>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -58,8 +63,6 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">2</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -73,8 +76,6 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">1</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -84,14 +85,12 @@
                 <property name="halign">start</property>
                 <property name="label" translatable="yes">Address:</property>
                 <attributes>
-                 <attribute name="weight" value="bold"/>
+                  <attribute name="weight" value="bold"/>
                 </attributes>
               </object>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">0</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -105,8 +104,6 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">0</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
           </object>
@@ -134,20 +131,21 @@
         <child>
           <object class="GtkButton" id="button_reload">
             <property name="visible">True</property>
-            <property name="valign">center</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="valign">center</property>
             <signal name="clicked" handler="button_reload_clicked_cb" swapped="no"/>
-            <style>
-              <class name="image-button"/>
-            </style>
             <child>
               <object class="GtkImage" id="reload_image">
                 <property name="visible">True</property>
-                <property name="icon_size">1</property>
+                <property name="can_focus">False</property>
                 <property name="icon_name">view-refresh-symbolic</property>
+                <property name="icon_size">1</property>
               </object>
             </child>
+            <style>
+              <class name="image-button"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -202,41 +200,5 @@
         <property name="position">1</property>
       </packing>
     </child>
-  </object>
-  <object class="GtkMessageDialog" id="messagedialog">
-    <property name="can_focus">False</property>
-    <property name="hexpand">True</property>
-    <property name="vexpand">True</property>
-    <property name="border_width">5</property>
-    <property name="type_hint">dialog</property>
-    <property name="skip_taskbar_hint">True</property>
-    <property name="message_type">error</property>
-    <property name="buttons">close</property>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="messagedialog-vbox">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="messagedialog-action_area">
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkTreeStore" id="treestore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-      <!-- column-name GObject1 -->
-      <column type="GObject"/>
-    </columns>
-  </object>
+  </template>
 </interface>
