@@ -1,6 +1,6 @@
 project(
   'd-feet',
-  version: '0.3.16',
+  version: '0.3.17',
   license: 'GPL2',
   meson_version: '>= 0.50.0',
 )
