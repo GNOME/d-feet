@@ -27,6 +27,36 @@
   <content_rating type="oars-1.1" />
 
   <releases>
+    <release version="0.3.16" date="2021-05-07">
+      <description>
+        <p>Introspection data is now loaded asynchronously, which avoids D-Feet locking up when a complicated service like systemd is selected.</p>
+        <p>You can now pass ‘--address ADDRESS’ on the command line to connect to a bus by address.</p>
+        <p>Properties whose values contain the ‘&amp;’ character are now handled correctly.</p>
+        <p>New and updated translations for:</p>
+        <ul>
+          <li>Basque</li>
+          <li>Croatian</li>
+          <li>Czech</li>
+          <li>Danish</li>
+          <li>Dutch</li>
+          <li>English (United Kingdom)</li>
+          <li>Finnish</li>
+          <li>Friulian</li>
+          <li>German</li>
+          <li>Hungarian</li>
+          <li>Indonesian</li>
+          <li>Polish</li>
+          <li>Portuguese (Brazil)</li>
+          <li>Romanian</li>
+          <li>Serbian</li>
+          <li>Slovenian</li>
+          <li>Spanish</li>
+          <li>Swedish</li>
+          <li>Turkish</li>
+          <li>Ukrainian</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.3.15" date="2019-08-06">
       <description>
         <p>D-Feet 0.3.15 is here, with various cosmetic improvements:</p>
